@@ -18,11 +18,12 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { IoBarcodeOutline, IoCloseCircleOutline } from "react-icons/io5";
 import { useRecoilState } from "recoil";
 import rfdc from "rfdc";
 import { rssSettingListAtom } from "../recoil/Atoms";
+import * as ls from "local-storage";
 
 const clone = rfdc();
 
@@ -102,6 +103,7 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
               const cloneList = clone(recoilRssSettingList);
               cloneList.push({ title: title, url: url });
               setRecoilRssSettingList(cloneList);
+              ls.set("rssSettingListAtom", cloneList);
               toast({
                 title: `update success!`,
                 status: "success",

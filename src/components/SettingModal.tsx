@@ -13,6 +13,7 @@ import { useToast } from "@chakra-ui/toast";
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import { updateDurationAtom } from "../recoil/Atoms";
+import * as ls from "local-storage";
 
 interface propsIF {
   isOpen: boolean;
@@ -62,6 +63,7 @@ const SettingModal = ({ isOpen, closeFunction }: propsIF) => {
               }
 
               setRecoilUpdateDuration(value);
+              ls.set<number>("updateDurationAtom", value);
               toast({
                 title: `update success!`,
                 status: "success",
