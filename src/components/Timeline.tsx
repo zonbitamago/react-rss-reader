@@ -10,9 +10,9 @@ import {
 import React from "react";
 
 const Timeline = () => {
-  const timeLineList = TimelineList.map((elem) => {
+  const timeLineList = TimelineList.map((elem, idx) => {
     return (
-      <Box>
+      <Box key={idx}>
         <Flex>
           <Avatar
             size="xs"
