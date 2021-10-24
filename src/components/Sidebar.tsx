@@ -1,6 +1,6 @@
-import { Box, Flex, Icon, Text } from "@chakra-ui/react";
+import { Box, Flex, Icon, Link, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, MouseEventHandler, useEffect, useState } from "react";
 import {
   IoLogoGithub,
   IoLogoRss,
@@ -9,10 +9,12 @@ import {
 } from "react-icons/io5";
 import { IconType } from "react-icons/lib";
 import { setInterval } from "timers";
+import SettingModal from "./SettingModal";
 
 const Sidebar = () => {
   const [MMDD, setMMDD] = useState("");
   const [HHMMSS, setHHMMSS] = useState("");
+  const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
 
   const runClock = () => {
     const now = new Date();
@@ -29,26 +31,58 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <Box h="100vh" bgColor="blue.600" color="white">
-      <Flex direction="column" justify="space-between" h="100%">
-        <Box>
-          <SideBarIcon icon={IoReload} />
-          <SideBarIcon icon={IoLogoRss} />
-          <SideBarIcon icon={IoSettingsSharp} />
-          <SideBarIcon icon={IoLogoGithub} />
-        </Box>
-        <Box>
-          <Text fontSize="xs">{MMDD}</Text>
-          <Text fontSize="xs">{HHMMSS}</Text>
-        </Box>
-      </Flex>
-    </Box>
+    <Fragment>
+      <Box h="100vh" bgColor="blue.600" color="white">
+        <Flex direction="column" justify="space-between" h="100%">
+          <Box>
+            <SideBarIcon icon={IoReload} />
+            <SideBarIcon icon={IoLogoRss} />
+            <SideBarIcon
+              icon={IoSettingsSharp}
+              onClick={() => {
+                setIsSettingModalOpen(true);
+              }}
+            />
+            <Link
+              href="https://github.com/zonbitamago/react-rss-reader"
+              isExternal
+            >
+              <SideBarIcon icon={IoLogoGithub} />
+            </Link>
+          </Box>
+          <Box>
+            <Text fontSize="xs">{MMDD}</Text>
+            <Text fontSize="xs">{HHMMSS}</Text>
+          </Box>
+        </Flex>
+      </Box>
+      <SettingModal
+        isOpen={isSettingModalOpen}
+        closeFunction={() => {
+          setIsSettingModalOpen(false);
+        }}
+      />
+    </Fragment>
   );
 };
 
-const SideBarIcon = ({ icon }: { icon: IconType }) => {
+const SideBarIcon = ({
+  icon,
+  onClick,
+}: {
+  icon: IconType;
+  onClick?: MouseEventHandler<HTMLDivElement>;
+}) => {
+  const clicAction = onClick ? onClick : () => {};
   return (
-    <Box ml={2} mr={2} pt={2} pb={2}>
+    <Box
+      ml={2}
+      mr={2}
+      pt={2}
+      pb={2}
+      onClick={clicAction}
+      sx={{ cursor: "pointer" }}
+    >
       <Icon as={icon} w="100%" height="auto" />
     </Box>
   );
