@@ -8,7 +8,6 @@ import {
   IoSettingsSharp,
 } from "react-icons/io5";
 import { IconType } from "react-icons/lib";
-import { setInterval } from "timers";
 import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
 
