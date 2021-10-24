@@ -9,12 +9,14 @@ import {
 } from "react-icons/io5";
 import { IconType } from "react-icons/lib";
 import { setInterval } from "timers";
+import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
 
 const Sidebar = () => {
   const [MMDD, setMMDD] = useState("");
   const [HHMMSS, setHHMMSS] = useState("");
   const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
+  const [isRssModalOpen, setIsRssModalOpen] = useState(false);
 
   const runClock = () => {
     const now = new Date();
@@ -36,7 +38,12 @@ const Sidebar = () => {
         <Flex direction="column" justify="space-between" h="100%">
           <Box>
             <SideBarIcon icon={IoReload} />
-            <SideBarIcon icon={IoLogoRss} />
+            <SideBarIcon
+              icon={IoLogoRss}
+              onClick={() => {
+                setIsRssModalOpen(true);
+              }}
+            />
             <SideBarIcon
               icon={IoSettingsSharp}
               onClick={() => {
@@ -56,6 +63,12 @@ const Sidebar = () => {
           </Box>
         </Flex>
       </Box>
+      <RssModal
+        isOpen={isRssModalOpen}
+        closeFunction={() => {
+          setIsRssModalOpen(false);
+        }}
+      />
       <SettingModal
         isOpen={isSettingModalOpen}
         closeFunction={() => {
