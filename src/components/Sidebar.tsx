@@ -8,6 +8,9 @@ import {
   IoSettingsSharp,
 } from "react-icons/io5";
 import { IconType } from "react-icons/lib";
+import { useRecoilValue } from "recoil";
+import { parseFeeds } from "../domain/Parser";
+import { rssSettingListAtom } from "../recoil/Atoms";
 import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
 
@@ -16,11 +19,24 @@ const Sidebar = () => {
   const [HHMMSS, setHHMMSS] = useState("");
   const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
   const [isRssModalOpen, setIsRssModalOpen] = useState(false);
+  const rssSettingList = useRecoilValue(rssSettingListAtom);
 
   const runClock = () => {
     const now = new Date();
     setMMDD(dayjs(now).format("MM/DD"));
     setHHMMSS(dayjs(now).format("HH:mm:ss"));
+  };
+
+  const contentLoad = async () => {
+    const args = rssSettingList.map((elem) => {
+      return {
+        site_name: elem.title,
+        url: elem.url,
+      };
+    });
+
+    const feeds = await parseFeeds(args);
+    console.log(feeds);
   };
 
   useEffect(() => {
@@ -29,6 +45,8 @@ const Sidebar = () => {
 
     // 1秒おきにclockを更新
     setInterval(runClock, 1000);
+
+    contentLoad();
   }, []);
 
   return (

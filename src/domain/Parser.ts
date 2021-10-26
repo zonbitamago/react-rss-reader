@@ -1,35 +1,51 @@
+import axios from "axios";
 import dayjs from "dayjs";
-import Parser from "rss-parser";
-
-export const parseFeed = async (arg: { site_name: string; url: string }) => {
-  const parser = new Parser();
-
-  const feed = await parser.parseURL(arg.url);
-  const result = feed.items.map((elem) => {
-    elem.site_name = arg.site_name;
-    return elem;
-  });
-  return result;
-};
 
 export const parseFeeds = async (
   urls: { site_name: string; url: string }[]
 ) => {
-  const promises = urls.map((url) => {
-    return parseFeed(url);
-  });
+  const body = {
+    urls: urls.map((elem) => {
+      return { url: elem.url };
+    }),
+  };
 
-  const tmpResult = await Promise.all(promises);
+  const tmpResult = await axios.post(
+    "https://goparallelfeed.vercel.app",
+    body,
+    {
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
 
-  const result = tmpResult
-    .flatMap((elem) => {
+  const result = tmpResult.data.results
+    .map((elem: { url: string; feed: { items: any } }) => {
+      const siteNameElem = urls.find((url) => {
+        return url.url === elem.url;
+      });
+
+      const items = elem.feed.items.map((element: any) => {
+        let retVal = element;
+        retVal.site_name = siteNameElem?.site_name;
+        retVal.updatedParsed = element.updatedParsed
+          ? element.updatedParsed
+          : element.publishedParsed;
+        return retVal;
+      });
+
+      return items;
+    })
+    .flatMap((elem: any) => {
       return elem;
     })
-    .sort((a, b) => {
-      const dayA = dayjs(a.isoDate);
-      const dayB = dayjs(b.isoDate);
+    .sort((a: { updatedParsed: string }, b: { updatedParsed: string }) => {
+      const dayA = dayjs(a.updatedParsed);
+      const dayB = dayjs(b.updatedParsed);
       return dayB.diff(dayA);
     });
+  // console.log("result", result);
 
   return result;
 };
