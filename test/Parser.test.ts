@@ -1,4 +1,4 @@
-import { parseFeeds } from "../src/domain/Parser";
+import { getDomain, parseFeeds } from "../src/domain/Parser";
 
 describe("parserFeeds", () => {
   test("ArrayFeeds", async () => {
@@ -32,5 +32,23 @@ describe("parserFeeds", () => {
 
     expect(result[0].updatedParsed).toBe("2012-12-31T17:00:00Z");
     expect(result[10].updatedParsed).toBe("2004-10-19T15:08:56Z");
+  });
+});
+
+describe("getDomain", () => {
+  test("domain has slash end", () => {
+    const url = "https://www.feedforall.com/sample.xml";
+
+    const result = getDomain(url);
+
+    expect(result).toBe("www.feedforall.com");
+  });
+
+  test("domain no slash end", () => {
+    const url = "https://www.feedforall.com";
+
+    const result = getDomain(url);
+
+    expect(result).toBe("www.feedforall.com");
   });
 });

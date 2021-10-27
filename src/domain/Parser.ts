@@ -31,6 +31,7 @@ export const parseFeeds = async (
       const items = elem.feed.items.map((element: any) => {
         let retVal = element;
         retVal.site_name = siteNameElem?.site_name;
+        retVal.domain = getDomain(siteNameElem?.url);
         retVal.updatedParsed = element.updatedParsed
           ? element.updatedParsed
           : element.publishedParsed;
@@ -80,4 +81,11 @@ const arrayChunk = ([...array], size = 1) => {
       index % size ? acc : [...acc, array.slice(index, index + size)],
     []
   );
+};
+
+export const getDomain = (url: string | undefined) => {
+  if (!url) throw new Error();
+  let domain = url.split("://")[1];
+  domain = domain.split("/")[0];
+  return domain;
 };

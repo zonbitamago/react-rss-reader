@@ -17,14 +17,14 @@ const Timeline = () => {
 
   const timeLineList = rssArticles.map((elem, idx) => {
     return (
-      <Box key={idx}>
+      <Box pt={1} key={idx}>
         <Flex>
           <Avatar
             size="xs"
             bgColor="white"
             name={elem.site_name}
             loading="lazy"
-            src="https://www.google.com/s2/favicons?sz=64&domain=qiita.com"
+            src={`https://www.google.com/s2/favicons?sz=64&domain=${elem.domain}`}
           />
           <Text pl={1}>{elem.site_name}</Text>
           <Spacer />

@@ -27,6 +27,7 @@ export const rssSettingListAtom = atom<rssSettingListAtomIF[]>({
 });
 
 interface rssArticlesAtomIF {
+  domain: string;
   site_name: string;
   updatedParsed: string;
   title: string;
