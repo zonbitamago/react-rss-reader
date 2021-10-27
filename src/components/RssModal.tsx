@@ -73,7 +73,9 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
         <ModalHeader>RSSList</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <List>{rssListArea}</List>
+          <List maxH={"50vh"} overflow="auto">
+            {rssListArea}
+          </List>
           <Divider />
           <InputGroup mt={3} mb={3}>
             <InputLeftAddon children="Title" />
@@ -109,8 +111,7 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
                 status: "success",
                 isClosable: true,
               });
-            }}
-          >
+            }}>
             Add
           </Button>
           <Button colorScheme="blue" mr={3} onClick={closeFunction}>
