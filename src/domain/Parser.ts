@@ -1,26 +1,28 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import dayjs from "dayjs";
 
 export const parseFeeds = async (
   urls: { site_name: string; url: string }[]
 ) => {
-  const body = {
-    urls: urls.map((elem) => {
-      return { url: elem.url };
-    }),
-  };
+  if (urls.length === 0) return;
 
-  const tmpResult = await axios.post(
-    "https://goparallelfeed.vercel.app",
-    body,
-    {
-      headers: {
-        "content-type": "application/x-www-form-urlencoded",
-      },
+  const urlBlocks = arrayChunk(urls, 5);
+
+  const promiseList = urlBlocks.map(
+    (elem: { site_name: string; url: string }[]) => {
+      return getParseTempResult(elem);
     }
   );
 
-  const result = tmpResult.data.results
+  const tmpBlockResult: { data: { results: any[] } }[] = await Promise.all(
+    promiseList
+  );
+
+  const tmpResult = tmpBlockResult.flatMap((elem) => {
+    return elem.data.results;
+  });
+
+  const result = tmpResult
     .map((elem: { url: string; feed: { items: any } }) => {
       const siteNameElem = urls.find((url) => {
         return url.url === elem.url;
@@ -48,4 +50,34 @@ export const parseFeeds = async (
   // console.log("result", result);
 
   return result;
+};
+
+const getParseTempResult = async (
+  urls: { site_name: string; url: string }[]
+) => {
+  const body = {
+    urls: urls.map((elem) => {
+      return { url: elem.url };
+    }),
+  };
+
+  const tmpResult = await axios.post(
+    "https://goparallelfeed.vercel.app",
+    body,
+    {
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+
+  return tmpResult;
+};
+
+const arrayChunk = ([...array], size = 1) => {
+  return array.reduce(
+    (acc, value, index) =>
+      index % size ? acc : [...acc, array.slice(index, index + size)],
+    []
+  );
 };
