@@ -7,10 +7,15 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
+import dayjs from "dayjs";
 import React from "react";
+import { useRecoilValue } from "recoil";
+import { rssArticlesAtom } from "../recoil/Atoms";
 
 const Timeline = () => {
-  const timeLineList = TimelineList.map((elem, idx) => {
+  const rssArticles = useRecoilValue(rssArticlesAtom);
+
+  const timeLineList = rssArticles.map((elem, idx) => {
     return (
       <Box key={idx}>
         <Flex>
@@ -18,15 +23,19 @@ const Timeline = () => {
             size="xs"
             bgColor="white"
             name={elem.site_name}
-            src={elem.icon_url}
+            src="http://www.google.com/s2/favicons?domain=qiita.com"
           />
           <Text pl={1}>{elem.site_name}</Text>
           <Spacer />
-          <Text color="gray">{elem.update_date}</Text>
+          <Text color="gray">
+            {dayjs(elem.updatedParsed).format("YYYY/MM/DD HH:mm:ss")}
+          </Text>
         </Flex>
-        <Link color="blue.400" href={elem.url} isExternal>
-          {elem.title}
-        </Link>
+        <Box ml={7}>
+          <Link color="blue.400" href={elem.link} isExternal>
+            {elem.title}
+          </Link>
+        </Box>
         <Divider />
       </Box>
     );

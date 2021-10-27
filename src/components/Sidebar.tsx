@@ -1,5 +1,6 @@
-import { Box, Flex, Icon, Link, Text } from "@chakra-ui/react";
+import { Box, Flex, Icon, Link, Text, useToast } from "@chakra-ui/react";
 import dayjs from "dayjs";
+import { motion, useAnimation } from "framer-motion";
 import React, { Fragment, MouseEventHandler, useEffect, useState } from "react";
 import {
   IoLogoGithub,
@@ -8,9 +9,14 @@ import {
   IoSettingsSharp,
 } from "react-icons/io5";
 import { IconType } from "react-icons/lib";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { parseFeeds } from "../domain/Parser";
-import { rssSettingListAtom } from "../recoil/Atoms";
+import {
+  rssArticlesAtom,
+  rssSettingListAtom,
+  timerIdAtom,
+  updateDurationAtom,
+} from "../recoil/Atoms";
 import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
 
@@ -20,6 +26,11 @@ const Sidebar = () => {
   const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
   const [isRssModalOpen, setIsRssModalOpen] = useState(false);
   const rssSettingList = useRecoilValue(rssSettingListAtom);
+  const updateDuration = useRecoilValue(updateDurationAtom);
+  const [timerId, setTimerId] = useRecoilState(timerIdAtom);
+  const [, setRssArticles] = useRecoilState(rssArticlesAtom);
+  const loadAnimationControl = useAnimation();
+  const toast = useToast();
 
   const runClock = () => {
     const now = new Date();
@@ -28,6 +39,7 @@ const Sidebar = () => {
   };
 
   const contentLoad = async () => {
+    loadAnimationControl.start({ rotate: 360 });
     const args = rssSettingList.map((elem) => {
       return {
         site_name: elem.title,
@@ -35,8 +47,24 @@ const Sidebar = () => {
       };
     });
 
-    const feeds = await parseFeeds(args);
-    console.log(feeds);
+    try {
+      const feeds = await parseFeeds(args);
+      // console.log(feeds);
+      setRssArticles(feeds);
+      toast({
+        title: `fetch article success!`,
+        status: "success",
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: `fetch article fail!`,
+        status: "error",
+        isClosable: true,
+      });
+    }
+    loadAnimationControl.stop();
   };
 
   useEffect(() => {
@@ -46,15 +74,40 @@ const Sidebar = () => {
     // 1秒おきにclockを更新
     setInterval(runClock, 1000);
 
+    // 初回読み込み
     contentLoad();
   }, []);
+
+  useEffect(() => {
+    if (timerId) {
+      clearInterval(timerId);
+    }
+    const updateTimerId = setInterval(contentLoad, updateDuration * 1000 * 60);
+    setTimerId(updateTimerId);
+  }, [updateDuration]);
 
   return (
     <Fragment>
       <Box h="100vh" bgColor="blue.600" color="white">
         <Flex direction="column" justify="space-between" h="100%">
           <Box>
-            <SideBarIcon icon={IoReload} />
+            <motion.div
+              animate={loadAnimationControl}
+              transition={{
+                type: "tween",
+                ease: "linear",
+                repeat: Infinity,
+                duration: 1.5,
+              }}
+              initial={false}
+            >
+              <SideBarIcon
+                icon={IoReload}
+                onClick={() => {
+                  contentLoad();
+                }}
+              />
+            </motion.div>
             <SideBarIcon
               icon={IoLogoRss}
               onClick={() => {

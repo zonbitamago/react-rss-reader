@@ -11,13 +11,33 @@ export const updateDurationAtom = atom({
     : defaultUpdateDuration,
 });
 
-const defaultRssSettingList: { title: string; url: string }[] = [];
+interface rssSettingListAtomIF {
+  title: string;
+  url: string;
+}
+const defaultRssSettingList: rssSettingListAtomIF[] = [];
 const initialRssSettingList =
-  ls.get<{ title: string; url: string }[]>("rssSettingListAtom");
+  ls.get<rssSettingListAtomIF[]>("rssSettingListAtom");
 
-export const rssSettingListAtom = atom<{ title: string; url: string }[]>({
+export const rssSettingListAtom = atom<rssSettingListAtomIF[]>({
   key: "rssSettingListAtom",
   default: initialRssSettingList
     ? initialRssSettingList
     : defaultRssSettingList,
+});
+
+interface rssArticlesAtomIF {
+  site_name: string;
+  updatedParsed: string;
+  title: string;
+  link: string;
+}
+export const rssArticlesAtom = atom<rssArticlesAtomIF[]>({
+  key: "rssArticlesAtom",
+  default: [],
+});
+
+export const timerIdAtom = atom<NodeJS.Timer | undefined>({
+  key: "timerIdAtom",
+  default: undefined,
 });
