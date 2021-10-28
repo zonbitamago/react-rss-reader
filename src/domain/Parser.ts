@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 export const parseFeeds = async (
   urls: { site_name: string; url: string }[]
 ) => {
-  if (urls.length === 0) return;
+  if (urls.length === 0) return [];
 
   const urlBlocks = arrayChunk(urls, 5);
 
