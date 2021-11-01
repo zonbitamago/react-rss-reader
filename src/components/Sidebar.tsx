@@ -1,4 +1,13 @@
-import { Box, Flex, Icon, Link, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Link,
+  Text,
+  ToastId,
+  useToast,
+} from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { motion, useAnimation } from "framer-motion";
 import React, { Fragment, MouseEventHandler, useEffect, useState } from "react";
@@ -28,9 +37,10 @@ const Sidebar = () => {
   const rssSettingList = useRecoilValue(rssSettingListAtom);
   const updateDuration = useRecoilValue(updateDurationAtom);
   const [timerId, setTimerId] = useRecoilState(timerIdAtom);
-  const [, setRssArticles] = useRecoilState(rssArticlesAtom);
+  const [rssArticles, setRssArticles] = useRecoilState(rssArticlesAtom);
   const loadAnimationControl = useAnimation();
   const toast = useToast();
+  const toastIdRef = React.useRef<ToastId>();
 
   const runClock = () => {
     const now = new Date();
@@ -50,12 +60,45 @@ const Sidebar = () => {
     try {
       const feeds = await parseFeeds(args);
       // console.log(feeds);
-      setRssArticles(feeds);
       toast({
         title: `fetch article success!`,
         status: "success",
         isClosable: true,
       });
+
+      // 更新するものがない場合
+      if (JSON.stringify(rssArticles) === JSON.stringify(feeds)) {
+        loadAnimationControl.stop();
+        return;
+      }
+
+      // 更新toastが表示されている場合
+      if (toast.isActive("updateContent")) {
+        loadAnimationControl.stop();
+        return;
+      }
+
+      toastIdRef.current = toast({
+        id: "updateContent",
+        duration: null,
+        position: "bottom",
+        render: () => (
+          <Box pl="55px">
+            <Button
+              width="inherit"
+              colorScheme="blue"
+              onClick={() => {
+                setRssArticles(feeds);
+                // @ts-ignore
+                toast.close(toastIdRef.current);
+              }}>
+              新しい更新を確認する。
+            </Button>
+          </Box>
+        ),
+      });
+
+      // setRssArticles(feeds);
     } catch (error) {
       console.error(error);
       toast({
