@@ -8,16 +8,17 @@ import {
   ToastId,
   useToast,
 } from "@chakra-ui/react";
+import loadable, { LoadableComponent } from "@loadable/component";
 import dayjs from "dayjs";
 import { motion, useAnimation } from "framer-motion";
 import React, { Fragment, MouseEventHandler, useEffect, useState } from "react";
-import {
-  IoLogoGithub,
-  IoLogoRss,
-  IoReload,
-  IoSettingsSharp,
-} from "react-icons/io5";
-import { IconType } from "react-icons/lib";
+// import {
+//   IoLogoGithub,
+//   IoLogoRss,
+//   IoReload,
+//   IoSettingsSharp,
+// } from "react-icons/io5";
+import { IconBaseProps, IconType } from "react-icons/lib";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { parseFeeds } from "../domain/Parser";
 import {
@@ -28,6 +29,19 @@ import {
 } from "../recoil/Atoms";
 import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
+
+const IoLogoGithub = loadable(
+  () => import("../splitting/react-icons/io5/IoLogoGithub")
+);
+const IoLogoRss = loadable(
+  () => import("../splitting/react-icons/io5/IoLogoRss")
+);
+const IoReload = loadable(
+  () => import("../splitting/react-icons/io5/IoReload")
+);
+const IoSettingsSharp = loadable(
+  () => import("../splitting/react-icons/io5/IoSettingsSharp")
+);
 
 const Sidebar = () => {
   const [MMDD, setMMDD] = useState("");
@@ -194,7 +208,7 @@ const SideBarIcon = ({
   icon,
   onClick,
 }: {
-  icon: IconType;
+  icon: LoadableComponent<IconBaseProps>;
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) => {
   const clicAction = onClick ? onClick : () => {};
