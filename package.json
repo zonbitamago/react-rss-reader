@@ -6,6 +6,7 @@
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
+    "analyze": "vite build --mode analyze",
     "serve": "vite preview",
     "test": "jest"
   },
@@ -46,6 +47,7 @@
     "@types/react-dom": "^17.0.0",
     "@vitejs/plugin-react": "^1.0.0",
     "jest": "^27.3.1",
+    "rollup-plugin-visualizer": "^5.5.2",
     "typescript": "^4.3.2",
     "vite": "^2.6.4",
     "vite-plugin-pwa": "^0.11.3"
