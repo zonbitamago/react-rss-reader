@@ -9,6 +9,14 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
+// import {
+//   Divider,
+//   InputLeftAddon,
+//   Link,
+//   List,
+//   ListIcon,
+//   ListItem,
+// } from "@chakra-ui/react";
 import {
   Divider,
   InputLeftAddon,
@@ -16,10 +24,13 @@ import {
   List,
   ListIcon,
   ListItem,
-} from "@chakra-ui/react";
+} from "../splitting/chakura-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import React, { useState } from "react";
-// import { IoBarcodeOutline, IoCloseCircleOutline } from "react-icons/io5";
+import {
+  IoBarcodeOutline,
+  IoCloseCircleOutline,
+} from "../splitting/react-icons/io5";
 import { useRecoilState } from "recoil";
 import rfdc from "rfdc";
 import { rssSettingListAtom } from "../recoil/Atoms";
@@ -27,13 +38,6 @@ import * as ls from "local-storage";
 import loadable from "@loadable/component";
 
 const clone = rfdc();
-
-const IoBarcodeOutline = loadable(
-  () => import("../splitting/react-icons/io5/IoBarcodeOutline")
-);
-const IoCloseCircleOutline = loadable(
-  () => import("../splitting/react-icons/io5/IoCloseCircleOutline")
-);
 
 interface propsIF {
   isOpen: boolean;
