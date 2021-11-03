@@ -35,7 +35,7 @@ const Timeline = () => {
             />
             <Text pl={1}>{elem.site_name}</Text>
             <Spacer />
-            <Text color="gray" fontSize="sm">
+            <Text color="gray" fontSize="xs">
               {dayjs(elem.updatedParsed).format("YYYY/MM/DD HH:mm:ss")}
             </Text>
           </Flex>
