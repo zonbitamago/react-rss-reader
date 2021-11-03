@@ -19,5 +19,12 @@
       };
     </script>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").then((reg) => {
+          console.log("Service worker registered.", reg);
+        });
+      }
+    </script>
   </body>
 </html>
