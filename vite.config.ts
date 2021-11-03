@@ -29,23 +29,24 @@ export default defineConfig(({ mode }) => {
           "apple-touch-icon.png",
         ],
         manifest: {
-          name: "Name of your app",
-          short_name: "Short name of your app",
-          description: "Description of your app",
-          theme_color: "#ffffff",
+          name: "rss-reader",
+          short_name: "rss-reader",
+          description: "rss reader",
+          theme_color: "#63b3ed",
+          background_color: "#63b3ed",
           icons: [
             {
-              src: "pwa-192x192.png",
+              src: "icon-192x192.png",
               sizes: "192x192",
               type: "image/png",
             },
             {
-              src: "pwa-512x512.png",
+              src: "icon-512x512.png",
               sizes: "512x512",
               type: "image/png",
             },
             {
-              src: "pwa-512x512.png",
+              src: "icon-512x512.png",
               sizes: "512x512",
               type: "image/png",
               purpose: "any maskable",
