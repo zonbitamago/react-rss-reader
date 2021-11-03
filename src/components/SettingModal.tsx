@@ -12,8 +12,9 @@ import {
 import { useToast } from "@chakra-ui/toast";
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
-import { updateDurationAtom } from "../recoil/Atoms";
+import { articleShowWeekAtom, updateDurationAtom } from "../recoil/Atoms";
 import * as ls from "local-storage";
+import { Divider, Heading } from "@chakra-ui/react";
 
 interface propsIF {
   isOpen: boolean;
@@ -26,15 +27,23 @@ const SettingModal = ({ isOpen, closeFunction }: propsIF) => {
   const [updateDuration, setUpdateDuration] = useState(
     recoilUpdateDuration.toString()
   );
+
+  const [recoilArticleShowWeek, setRecoilArticleShowWeek] =
+    useRecoilState(articleShowWeekAtom);
+  const [articleShowWeek, setArticleShowWeek] = useState(
+    recoilArticleShowWeek.toString()
+  );
+
   const toast = useToast();
 
   return (
     <Modal isOpen={isOpen} onClose={closeFunction}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>更新間隔</ModalHeader>
+        <ModalHeader>Settings</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+          <Heading size="sm">更新間隔</Heading>
           <InputGroup size="sm">
             <Input
               placeholder="update duration"
@@ -45,6 +54,18 @@ const SettingModal = ({ isOpen, closeFunction }: propsIF) => {
             />
             <InputRightAddon children="min" />
           </InputGroup>
+          <Divider mt={4} mb={4} />
+          <Heading size="sm">記事表示期間</Heading>
+          <InputGroup size="sm">
+            <Input
+              placeholder="show week"
+              value={articleShowWeek}
+              onChange={(e) => {
+                setArticleShowWeek(e.target.value);
+              }}
+            />
+            <InputRightAddon children="week" />
+          </InputGroup>
         </ModalBody>
 
         <ModalFooter>
@@ -52,8 +73,8 @@ const SettingModal = ({ isOpen, closeFunction }: propsIF) => {
             colorScheme="red"
             mr={3}
             onClick={() => {
-              const value = parseInt(updateDuration);
-              if (isNaN(value)) {
+              const updateDurationValue = parseInt(updateDuration);
+              if (isNaN(updateDurationValue)) {
                 toast({
                   title: `update failed!`,
                   status: "error",
@@ -62,15 +83,28 @@ const SettingModal = ({ isOpen, closeFunction }: propsIF) => {
                 return;
               }
 
-              setRecoilUpdateDuration(value);
-              ls.set<number>("updateDurationAtom", value);
+              const articleShowWeekValue = parseInt(articleShowWeek);
+              if (isNaN(articleShowWeekValue)) {
+                toast({
+                  title: `update failed!`,
+                  status: "error",
+                  isClosable: true,
+                });
+                return;
+              }
+
+              setRecoilUpdateDuration(updateDurationValue);
+              ls.set<number>("updateDurationAtom", updateDurationValue);
+
+              setRecoilUpdateDuration(articleShowWeekValue);
+              ls.set<number>("articleShowWeekAtom", articleShowWeekValue);
+
               toast({
                 title: `update success!`,
                 status: "success",
                 isClosable: true,
               });
-            }}
-          >
+            }}>
             Update
           </Button>
           <Button colorScheme="blue" mr={3} onClick={closeFunction}>

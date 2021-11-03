@@ -11,6 +11,16 @@ export const updateDurationAtom = atom({
     : defaultUpdateDuration,
 });
 
+const defaultArticleShowWeek = 1;
+const initialArticleShowWeek = ls.get<number>("articleShowWeekAtom");
+
+export const articleShowWeekAtom = atom({
+  key: "articleShowWeekAtom",
+  default: initialArticleShowWeek
+    ? initialArticleShowWeek
+    : defaultArticleShowWeek,
+});
+
 interface rssSettingListAtomIF {
   title: string;
   url: string;

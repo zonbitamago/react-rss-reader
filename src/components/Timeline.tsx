@@ -11,11 +11,12 @@ import {
 import dayjs from "dayjs";
 import React from "react";
 import { useRecoilValue } from "recoil";
-import { rssArticlesAtom } from "../recoil/Atoms";
+import { articleShowWeekAtom, rssArticlesAtom } from "../recoil/Atoms";
 
 const Timeline = () => {
   const rssArticles = useRecoilValue(rssArticlesAtom);
-  const baseDate = dayjs().subtract(1, "w");
+  const articleShowWeek = useRecoilValue(articleShowWeekAtom);
+  const baseDate = dayjs().subtract(articleShowWeek, "w");
 
   const timeLineList = rssArticles
     .filter((elem) => {
