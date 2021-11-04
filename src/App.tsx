@@ -27,7 +27,7 @@ function App() {
       <RecoilRoot>
         <Box w="100vw" h="100vh">
           <ScaleFade initialScale={0.9} in={isOpen} unmountOnExit={true}>
-            <Center h="100vh">
+            <Center h="100vh" bg="blue.300">
               <motion.div animate={{ scale: 2 }} transition={{ duration: 0.5 }}>
                 <Center>
                   <Image src="./icon.png" w="30%" />
