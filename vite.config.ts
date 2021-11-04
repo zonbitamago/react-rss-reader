@@ -17,6 +17,11 @@ export default defineConfig(({ mode }) => {
               brotliSize: true,
             }),
         ],
+        output: {
+          manualChunks: {
+            recoil: ["recoil"],
+          },
+        },
       },
     },
     plugins: [

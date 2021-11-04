@@ -8,7 +8,6 @@ import {
   ToastId,
   useToast,
 } from "@chakra-ui/react";
-import loadable, { LoadableComponent } from "@loadable/component";
 import dayjs from "dayjs";
 import { motion, useAnimation } from "framer-motion";
 import React, { Fragment, MouseEventHandler, useEffect, useState } from "react";
@@ -17,8 +16,8 @@ import {
   IoLogoRss,
   IoReload,
   IoSettingsSharp,
-} from "../splitting/react-icons/io5/";
-import { IconBaseProps, IconType } from "react-icons/lib";
+} from "react-icons/io5/";
+import { IconType } from "react-icons/lib";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { parseFeeds } from "../domain/Parser";
 import {
@@ -195,7 +194,7 @@ const SideBarIcon = ({
   icon,
   onClick,
 }: {
-  icon: LoadableComponent<IconBaseProps>;
+  icon: IconType;
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) => {
   const clicAction = onClick ? onClick : () => {};
