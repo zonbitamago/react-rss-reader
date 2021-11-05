@@ -1,4 +1,8 @@
-import { getDomain, parseFeeds } from "../src/domain/Parser";
+import {
+  getDomain,
+  getParseTempResult,
+  parseFeeds,
+} from "../src/domain/Parser";
 
 describe("parserFeeds", () => {
   test("ArrayFeeds", async () => {
@@ -50,5 +54,23 @@ describe("getDomain", () => {
     const result = getDomain(url);
 
     expect(result).toBe("www.feedforall.com");
+  });
+});
+
+describe("getParseTempResult", () => {
+  test("valid url", async () => {
+    const url = "https://www.feedforall.com/sample.xml";
+    const param = [{ url: url }];
+    const result = await getParseTempResult(param);
+
+    expect(result.data.results[0].result).toBe(true);
+  });
+
+  test("invalid url", async () => {
+    const url = "a";
+    const param = [{ url: url }];
+    const result = await getParseTempResult(param);
+
+    expect(result.data.results[0].result).toBe(false);
   });
 });

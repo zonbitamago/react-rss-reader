@@ -53,8 +53,8 @@ export const parseFeeds = async (
   return result;
 };
 
-const getParseTempResult = async (
-  urls: { site_name: string; url: string }[]
+export const getParseTempResult = async (
+  urls: { site_name?: string; url: string }[]
 ) => {
   const body = {
     urls: urls.map((elem) => {
