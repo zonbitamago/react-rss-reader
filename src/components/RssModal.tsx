@@ -41,6 +41,16 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
   const toast = useToast();
 
   const addRSSToList = async () => {
+    const isValidTitle = title.length > 0;
+    if (!isValidTitle) {
+      toast({
+        title: `update fail:invalidTitle`,
+        status: "error",
+        isClosable: true,
+      });
+      return;
+    }
+
     const tmpResult = await getParseTempResult([
       { site_name: title, url: url },
     ]);
