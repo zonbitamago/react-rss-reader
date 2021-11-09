@@ -24,6 +24,7 @@ import { useRecoilState } from "recoil";
 import rfdc from "rfdc";
 import { rssSettingListAtom } from "../recoil/Atoms";
 import * as ls from "local-storage";
+import { getParseTempResult } from "../domain/Parser";
 
 const clone = rfdc();
 
@@ -38,6 +39,31 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
   const [recoilRssSettingList, setRecoilRssSettingList] =
     useRecoilState(rssSettingListAtom);
   const toast = useToast();
+
+  const addRSSToList = async () => {
+    const tmpResult = await getParseTempResult([
+      { site_name: title, url: url },
+    ]);
+    const isValidURL = tmpResult.data.results[0].result;
+    if (!isValidURL) {
+      toast({
+        title: `update fail:invalidURL`,
+        status: "error",
+        isClosable: true,
+      });
+      return;
+    }
+
+    const cloneList = clone(recoilRssSettingList);
+    cloneList.push({ title: title, url: url });
+    setRecoilRssSettingList(cloneList);
+    ls.set("rssSettingListAtom", cloneList);
+    toast({
+      title: `update success!`,
+      status: "success",
+      isClosable: true,
+    });
+  };
 
   const rssListArea = recoilRssSettingList.map((elem, idx) => {
     return (
@@ -98,20 +124,7 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button
-            colorScheme="red"
-            mr={3}
-            onClick={() => {
-              const cloneList = clone(recoilRssSettingList);
-              cloneList.push({ title: title, url: url });
-              setRecoilRssSettingList(cloneList);
-              ls.set("rssSettingListAtom", cloneList);
-              toast({
-                title: `update success!`,
-                status: "success",
-                isClosable: true,
-              });
-            }}>
+          <Button colorScheme="red" mr={3} onClick={addRSSToList}>
             Add
           </Button>
           <Button colorScheme="blue" mr={3} onClick={closeFunction}>
