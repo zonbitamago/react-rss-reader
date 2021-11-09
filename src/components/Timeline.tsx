@@ -69,7 +69,6 @@ const Timeline = () => {
 
   const timeLineList =
     tmpTimeLineList.length > 0 ? tmpTimeLineList : dummyTimeLineList;
-  console.log(dummyTimeLineList);
 
   return (
     <Box h="calc(100vh - 55px)" sx={{ overflow: "scroll" }}>
