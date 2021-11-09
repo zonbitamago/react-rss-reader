@@ -17,7 +17,6 @@ function App() {
   const [isOpen, setIsOpen] = useState(true);
   if (isOpen) {
     setTimeout(() => {
-      console.log(1);
       setIsOpen(false);
     }, 2000);
   }
