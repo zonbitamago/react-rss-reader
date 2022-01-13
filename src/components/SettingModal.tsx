@@ -10,11 +10,9 @@ import {
   ModalOverlay,
 } from "@chakra-ui/modal";
 import { useToast } from "@chakra-ui/toast";
-import React, { useState } from "react";
-import { useRecoilState } from "recoil";
-import { articleShowWeekAtom, updateDurationAtom } from "../recoil/Atoms";
-import * as ls from "local-storage";
 import { Divider, Heading } from "@chakra-ui/react";
+import { useUpdateDuration } from "../hooks/useUpdateDuration";
+import { useArticleShowWeek } from "../hooks/useArticleShowWeek";
 
 interface propsIF {
   isOpen: boolean;
@@ -22,17 +20,10 @@ interface propsIF {
 }
 
 const SettingModal = ({ isOpen, closeFunction }: propsIF) => {
-  const [recoilUpdateDuration, setRecoilUpdateDuration] =
-    useRecoilState(updateDurationAtom);
-  const [updateDuration, setUpdateDuration] = useState(
-    recoilUpdateDuration.toString()
-  );
-
-  const [recoilArticleShowWeek, setRecoilArticleShowWeek] =
-    useRecoilState(articleShowWeekAtom);
-  const [articleShowWeek, setArticleShowWeek] = useState(
-    recoilArticleShowWeek.toString()
-  );
+  const [updateDuration, setUpdateDuration, setLocalUpdateDuration] =
+    useUpdateDuration();
+  const [articleShowWeek, setArticleShowWeek, setLocalArcileShowWeek] =
+    useArticleShowWeek();
 
   const toast = useToast();
 
@@ -93,11 +84,8 @@ const SettingModal = ({ isOpen, closeFunction }: propsIF) => {
                 return;
               }
 
-              setRecoilUpdateDuration(updateDurationValue);
-              ls.set<number>("updateDurationAtom", updateDurationValue);
-
-              setRecoilUpdateDuration(articleShowWeekValue);
-              ls.set<number>("articleShowWeekAtom", articleShowWeekValue);
+              setLocalUpdateDuration(updateDurationValue);
+              setLocalArcileShowWeek(articleShowWeekValue);
 
               toast({
                 title: `update success!`,
