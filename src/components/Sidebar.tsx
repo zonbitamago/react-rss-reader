@@ -8,7 +8,6 @@ import {
   ToastId,
   useToast,
 } from "@chakra-ui/react";
-import dayjs from "dayjs";
 import { motion, useAnimation } from "framer-motion";
 import React, { Fragment, MouseEventHandler, useEffect, useState } from "react";
 import {
@@ -20,6 +19,7 @@ import {
 import { IconType } from "react-icons/lib";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { parseFeeds } from "../domain/Parser";
+import { useClock } from "../hooks/useClock";
 import {
   rssArticlesAtom,
   rssSettingListAtom,
@@ -30,8 +30,7 @@ import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
 
 const Sidebar = () => {
-  const [MMDD, setMMDD] = useState("");
-  const [HHMMSS, setHHMMSS] = useState("");
+  const [MMDD, HHMMSS] = useClock();
   const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
   const [isRssModalOpen, setIsRssModalOpen] = useState(false);
   const rssSettingList = useRecoilValue(rssSettingListAtom);
@@ -41,12 +40,6 @@ const Sidebar = () => {
   const loadAnimationControl = useAnimation();
   const toast = useToast();
   const toastIdRef = React.useRef<ToastId>();
-
-  const runClock = () => {
-    const now = new Date();
-    setMMDD(dayjs(now).format("MM/DD"));
-    setHHMMSS(dayjs(now).format("HH:mm:ss"));
-  };
 
   const contentLoad = async () => {
     loadAnimationControl.start({ rotate: 360 });
@@ -111,13 +104,6 @@ const Sidebar = () => {
   };
 
   useEffect(() => {
-    // ロード時読み込み用
-    runClock();
-
-    // 1秒おきにclockを更新
-    setInterval(runClock, 1000);
-
-    // 初回読み込み
     contentLoad();
   }, []);
 
