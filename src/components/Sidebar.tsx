@@ -20,12 +20,8 @@ import { IconType } from "react-icons/lib";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { parseFeeds } from "../domain/Parser";
 import { useClock } from "../hooks/useClock";
-import {
-  rssArticlesAtom,
-  rssSettingListAtom,
-  timerIdAtom,
-  updateDurationAtom,
-} from "../recoil/Atoms";
+import { useTimerCallback } from "../hooks/useTimerCallback";
+import { rssArticlesAtom, rssSettingListAtom } from "../recoil/Atoms";
 import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
 
@@ -34,8 +30,6 @@ const Sidebar = () => {
   const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
   const [isRssModalOpen, setIsRssModalOpen] = useState(false);
   const rssSettingList = useRecoilValue(rssSettingListAtom);
-  const updateDuration = useRecoilValue(updateDurationAtom);
-  const [timerId, setTimerId] = useRecoilState(timerIdAtom);
   const [rssArticles, setRssArticles] = useRecoilState(rssArticlesAtom);
   const loadAnimationControl = useAnimation();
   const toast = useToast();
@@ -107,13 +101,7 @@ const Sidebar = () => {
     contentLoad();
   }, []);
 
-  useEffect(() => {
-    if (timerId) {
-      clearInterval(timerId);
-    }
-    const updateTimerId = setInterval(contentLoad, updateDuration * 1000 * 60);
-    setTimerId(updateTimerId);
-  }, [updateDuration]);
+  useTimerCallback(contentLoad);
 
   return (
     <Fragment>
