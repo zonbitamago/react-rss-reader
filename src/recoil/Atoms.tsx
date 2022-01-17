@@ -36,8 +36,8 @@ export const rssSettingListAtom = atom<rssSettingListAtomIF[]>({
     : defaultRssSettingList,
 });
 
-interface rssArticlesAtomIF {
-  domain: string;
+export interface rssArticlesAtomIF {
+  icon_url: string;
   site_name: string;
   updatedParsed: string;
   title: string;

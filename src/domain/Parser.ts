@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import dayjs from "dayjs";
+import { rssArticlesAtomIF } from "../recoil/Atoms";
 
 export const parseFeeds = async (
   urls: { site_name: string; url: string }[]
@@ -22,7 +23,7 @@ export const parseFeeds = async (
     return elem.data.results;
   });
 
-  const result = tmpResult
+  const result: rssArticlesAtomIF[] = tmpResult
     .map((elem: { url: string; feed: { items: any } }) => {
       const siteNameElem = urls.find((url) => {
         return url.url === elem.url;
@@ -31,7 +32,10 @@ export const parseFeeds = async (
       const items = elem.feed.items.map((element: any) => {
         let retVal = element;
         retVal.site_name = siteNameElem?.site_name;
-        retVal.domain = getDomain(siteNameElem?.url);
+        // retVal.domain = getDomain(siteNameElem?.url);
+        retVal.icon_url = `https://www.google.com/s2/favicons?sz=64&domain=${getDomain(
+          siteNameElem?.url
+        )}`;
         retVal.updatedParsed = element.updatedParsed
           ? element.updatedParsed
           : element.publishedParsed;

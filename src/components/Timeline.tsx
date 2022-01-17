@@ -49,7 +49,7 @@ const Timeline = () => {
               bgColor="white"
               name={elem.site_name}
               loading="lazy"
-              src={`https://www.google.com/s2/favicons?sz=64&domain=${elem.domain}`}
+              src={elem.icon_url}
             />
             <Text pl={1}>{elem.site_name}</Text>
             <Spacer />
