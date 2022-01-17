@@ -15,6 +15,7 @@ import {
   IoLogoRss,
   IoReload,
   IoSettingsSharp,
+  IoLogoTwitter,
 } from "react-icons/io5/";
 import { IconType } from "react-icons/lib";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -24,11 +25,13 @@ import { useTimerCallback } from "../hooks/useTimerCallback";
 import { rssArticlesAtom, rssSettingListAtom } from "../recoil/Atoms";
 import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
+import TwitterModal from "./TwitterModal";
 
 const Sidebar = () => {
   const [MMDD, HHMMSS] = useClock();
   const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
   const [isRssModalOpen, setIsRssModalOpen] = useState(false);
+  const [isTwitterModalOpen, setIsTwitterModalOpen] = useState(false);
   const rssSettingList = useRecoilValue(rssSettingListAtom);
   const [rssArticles, setRssArticles] = useRecoilState(rssArticlesAtom);
   const loadAnimationControl = useAnimation();
@@ -136,6 +139,12 @@ const Sidebar = () => {
                 setIsSettingModalOpen(true);
               }}
             />
+            <SideBarIcon
+              icon={IoLogoTwitter}
+              onClick={() => {
+                setIsTwitterModalOpen(true);
+              }}
+            />
             <Link
               href="https://github.com/zonbitamago/react-rss-reader"
               isExternal>
@@ -158,6 +167,12 @@ const Sidebar = () => {
         isOpen={isSettingModalOpen}
         closeFunction={() => {
           setIsSettingModalOpen(false);
+        }}
+      />
+      <TwitterModal
+        isOpen={isTwitterModalOpen}
+        closeFunction={() => {
+          setIsTwitterModalOpen(false);
         }}
       />
     </Fragment>

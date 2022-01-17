@@ -52,3 +52,22 @@ export const timerIdAtom = atom<NodeJS.Timer | undefined>({
   key: "timerIdAtom",
   default: undefined,
 });
+
+export interface twitterSettingAtomIF {
+  listId: string;
+  bearerToken: string;
+}
+
+const defaultTwitterSetting: twitterSettingAtomIF = {
+  listId: "",
+  bearerToken: "",
+};
+const initialTwitterSetting =
+  ls.get<twitterSettingAtomIF>("twitterSettingAtom");
+
+export const twitterSettingAtom = atom<twitterSettingAtomIF>({
+  key: "twitterSettingAtom",
+  default: initialTwitterSetting
+    ? initialTwitterSetting
+    : defaultTwitterSetting,
+});
