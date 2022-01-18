@@ -19,10 +19,14 @@ import {
 } from "react-icons/io5/";
 import { IconType } from "react-icons/lib";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { parseFeeds } from "../domain/Parser";
+import { fetchTwitterList, parseFeeds } from "../domain/Parser";
 import { useClock } from "../hooks/useClock";
 import { useTimerCallback } from "../hooks/useTimerCallback";
-import { rssArticlesAtom, rssSettingListAtom } from "../recoil/Atoms";
+import {
+  rssArticlesAtom,
+  rssSettingListAtom,
+  twitterSettingAtom,
+} from "../recoil/Atoms";
 import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
 import TwitterModal from "./TwitterModal";
@@ -34,6 +38,7 @@ const Sidebar = () => {
   const [isTwitterModalOpen, setIsTwitterModalOpen] = useState(false);
   const rssSettingList = useRecoilValue(rssSettingListAtom);
   const [rssArticles, setRssArticles] = useRecoilState(rssArticlesAtom);
+  const twitterSettingValue = useRecoilValue(twitterSettingAtom);
   const loadAnimationControl = useAnimation();
   const toast = useToast();
   const toastIdRef = React.useRef<ToastId>();
@@ -48,6 +53,16 @@ const Sidebar = () => {
     });
 
     try {
+      if (
+        twitterSettingValue.listId.length > 0 &&
+        twitterSettingValue.bearerToken.length > 0
+      ) {
+        await fetchTwitterList(
+          twitterSettingValue.listId,
+          twitterSettingValue.bearerToken
+        );
+      }
+
       const feeds = await parseFeeds(args);
       // console.log(feeds);
       toast({

@@ -93,3 +93,25 @@ export const getDomain = (url: string | undefined) => {
   domain = domain.split("/")[0];
   return domain;
 };
+
+export const fetchTwitterList = async (
+  listId: string,
+  bearer_token: string
+) => {
+  const body = {
+    id: listId,
+    bearer_token: bearer_token,
+  };
+  const result = await axios.post(
+    "https://vercel-twitter-api-proxy.vercel.app/api/proxy",
+    body,
+    {
+      headers: {
+        "content-type": "application/json",
+      },
+    }
+  );
+  console.log(result);
+
+  return result;
+};
