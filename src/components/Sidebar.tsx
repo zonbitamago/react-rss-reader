@@ -19,11 +19,12 @@ import {
 } from "react-icons/io5/";
 import { IconType } from "react-icons/lib";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { fetchTwitterList, parseFeeds } from "../domain/Parser";
+import { fetchTwitterList, margeFeeds, parseFeeds } from "../domain/Parser";
 import { useClock } from "../hooks/useClock";
 import { useTimerCallback } from "../hooks/useTimerCallback";
 import {
   rssArticlesAtom,
+  rssArticlesAtomIF,
   rssSettingListAtom,
   twitterSettingAtom,
 } from "../recoil/Atoms";
@@ -53,11 +54,12 @@ const Sidebar = () => {
     });
 
     try {
+      let twitterDatas: rssArticlesAtomIF[] = [];
       if (
         twitterSettingValue.listId.length > 0 &&
         twitterSettingValue.bearerToken.length > 0
       ) {
-        await fetchTwitterList(
+        twitterDatas = await fetchTwitterList(
           twitterSettingValue.listId,
           twitterSettingValue.bearerToken
         );
@@ -71,8 +73,10 @@ const Sidebar = () => {
         isClosable: true,
       });
 
+      const parsedFeeds = margeFeeds(feeds, twitterDatas);
+
       // 更新するものがない場合
-      if (JSON.stringify(rssArticles) === JSON.stringify(feeds)) {
+      if (JSON.stringify(rssArticles) === JSON.stringify(parsedFeeds)) {
         loadAnimationControl.stop();
         return;
       }
@@ -93,7 +97,7 @@ const Sidebar = () => {
               width="inherit"
               colorScheme="blue"
               onClick={() => {
-                setRssArticles(feeds);
+                setRssArticles(parsedFeeds);
                 // @ts-ignore
                 toast.close(toastIdRef.current);
               }}>

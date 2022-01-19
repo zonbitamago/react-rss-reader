@@ -57,6 +57,19 @@ export const parseFeeds = async (
   return result;
 };
 
+export const margeFeeds = (
+  feeds: rssArticlesAtomIF[],
+  twitterDatas: rssArticlesAtomIF[]
+) => {
+  return twitterDatas
+    .concat(feeds)
+    .sort((a: { updatedParsed: string }, b: { updatedParsed: string }) => {
+      const dayA = dayjs(a.updatedParsed);
+      const dayB = dayjs(b.updatedParsed);
+      return dayB.diff(dayA);
+    });
+};
+
 export const getParseTempResult = async (
   urls: { site_name?: string; url: string }[]
 ) => {
@@ -111,7 +124,43 @@ export const fetchTwitterList = async (
       },
     }
   );
-  console.log(result);
 
-  return result;
+  const returnData = parseTwitterData(result.data.result);
+
+  return returnData;
+};
+
+interface tweetData {
+  author_id: string;
+  id: string;
+  text: string;
+  created_at: string;
+}
+
+interface twitterUserData {
+  created_at: string;
+  id: string;
+  name: string;
+  profile_image_url: string;
+  username: string;
+}
+
+const parseTwitterData = (twitterData: any) => {
+  const userData: twitterUserData[] = twitterData.includes.users;
+
+  const data: tweetData[] = twitterData.data;
+
+  const parseData = data.map((elem) => {
+    const user = userData.find((user) => user.id === elem.author_id);
+    const returnData: rssArticlesAtomIF = {
+      icon_url: user ? user.profile_image_url : "",
+      site_name: user ? user.name : "",
+      title: elem.text,
+      link: `https://twitter.com/${user?.username}/status/${elem.id}`,
+      updatedParsed: elem.created_at,
+    };
+    return returnData;
+  });
+
+  return parseData;
 };
