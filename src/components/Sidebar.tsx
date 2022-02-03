@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import {
   Box,
   Button,
@@ -8,7 +9,6 @@ import {
   ToastId,
   useToast,
 } from "@chakra-ui/react";
-import { motion, useAnimation } from "framer-motion";
 import React, { Fragment, MouseEventHandler, useEffect, useState } from "react";
 import {
   IoLogoGithub,
@@ -31,21 +31,22 @@ import {
 import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
 import TwitterModal from "./TwitterModal";
+import { keyframes } from "@emotion/react";
 
 const Sidebar = () => {
   const [MMDD, HHMMSS] = useClock();
   const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
   const [isRssModalOpen, setIsRssModalOpen] = useState(false);
   const [isTwitterModalOpen, setIsTwitterModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const rssSettingList = useRecoilValue(rssSettingListAtom);
   const [rssArticles, setRssArticles] = useRecoilState(rssArticlesAtom);
   const twitterSettingValue = useRecoilValue(twitterSettingAtom);
-  const loadAnimationControl = useAnimation();
   const toast = useToast();
   const toastIdRef = React.useRef<ToastId>();
 
   const contentLoad = async () => {
-    loadAnimationControl.start({ rotate: 360 });
+    setIsLoading(true);
     const args = rssSettingList.map((elem) => {
       return {
         site_name: elem.title,
@@ -77,13 +78,13 @@ const Sidebar = () => {
 
       // 更新するものがない場合
       if (JSON.stringify(rssArticles) === JSON.stringify(parsedFeeds)) {
-        loadAnimationControl.stop();
+        setIsLoading(false);
         return;
       }
 
       // 更新toastが表示されている場合
       if (toast.isActive("updateContent")) {
-        loadAnimationControl.stop();
+        setIsLoading(false);
         return;
       }
 
@@ -116,7 +117,7 @@ const Sidebar = () => {
         isClosable: true,
       });
     }
-    loadAnimationControl.stop();
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -125,27 +126,23 @@ const Sidebar = () => {
 
   useTimerCallback(contentLoad);
 
+  const loadingAnimation = isLoading
+    ? { animation: `${rotateAnime} 1.5s linear infinite` }
+    : {};
+
   return (
     <Fragment>
       <Box h="100vh" bgColor="blue.600" color="white">
         <Flex direction="column" justify="space-between" h="100%">
           <Box>
-            <motion.div
-              animate={loadAnimationControl}
-              transition={{
-                type: "tween",
-                ease: "linear",
-                repeat: Infinity,
-                duration: 1.5,
-              }}
-              initial={false}>
+            <div css={loadingAnimation}>
               <SideBarIcon
                 icon={IoReload}
                 onClick={() => {
                   contentLoad();
                 }}
               />
-            </motion.div>
+            </div>
             <SideBarIcon
               icon={IoLogoRss}
               onClick={() => {
@@ -220,3 +217,12 @@ const SideBarIcon = ({
 };
 
 export default Sidebar;
+
+const rotateAnime = keyframes`
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
