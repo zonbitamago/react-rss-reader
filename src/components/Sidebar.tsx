@@ -1,14 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Link,
-  Text,
-  ToastId,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Icon, Link, Text, ToastId } from "@chakra-ui/react";
 import React, { Fragment, MouseEventHandler, useEffect, useState } from "react";
 import {
   IoLogoGithub,
@@ -27,6 +18,7 @@ import SettingModal from "./SettingModal";
 import TwitterModal from "./TwitterModal";
 import { keyframes } from "@emotion/react";
 import { useFetchContents } from "../hooks/useFetchContents";
+import { useCustomToast } from "../hooks/useCustomToast";
 
 const Sidebar = () => {
   const [MMDD, HHMMSS] = useClock();
@@ -35,17 +27,13 @@ const Sidebar = () => {
   const [isRssModalOpen, setIsRssModalOpen] = useState(false);
   const [isTwitterModalOpen, setIsTwitterModalOpen] = useState(false);
   const [rssArticles, setRssArticles] = useRecoilState(rssArticlesAtom);
-  const toast = useToast();
+  const { toast, showToast } = useCustomToast();
   const toastIdRef = React.useRef<ToastId>();
 
   const contentLoad = async () => {
     try {
       const parsedFeeds = await fetchContents();
-      toast({
-        title: `fetch article success!`,
-        status: "success",
-        isClosable: true,
-      });
+      showToast(`fetch article success!`, "success");
 
       // 更新するものがない場合
       if (JSON.stringify(rssArticles) === JSON.stringify(parsedFeeds)) {
@@ -78,11 +66,7 @@ const Sidebar = () => {
       });
     } catch (error) {
       console.error(error);
-      toast({
-        title: `fetch article fail!`,
-        status: "error",
-        isClosable: true,
-      });
+      showToast(`fetch article fail!`, "error");
     }
   };
 

@@ -9,10 +9,10 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
-import { useToast } from "@chakra-ui/toast";
 import { Divider, Heading } from "@chakra-ui/react";
 import { useUpdateDuration } from "../hooks/useUpdateDuration";
 import { useArticleShowWeek } from "../hooks/useArticleShowWeek";
+import { useCustomToast } from "../hooks/useCustomToast";
 
 interface propsIF {
   isOpen: boolean;
@@ -25,7 +25,7 @@ const SettingModal = ({ isOpen, closeFunction }: propsIF) => {
   const [articleShowWeek, setArticleShowWeek, setLocalArcileShowWeek] =
     useArticleShowWeek();
 
-  const toast = useToast();
+  const { showToast } = useCustomToast();
 
   return (
     <Modal isOpen={isOpen} onClose={closeFunction}>
@@ -66,32 +66,20 @@ const SettingModal = ({ isOpen, closeFunction }: propsIF) => {
             onClick={() => {
               const updateDurationValue = parseInt(updateDuration);
               if (isNaN(updateDurationValue)) {
-                toast({
-                  title: `update failed!`,
-                  status: "error",
-                  isClosable: true,
-                });
+                showToast(`update failed`, "error");
                 return;
               }
 
               const articleShowWeekValue = parseInt(articleShowWeek);
               if (isNaN(articleShowWeekValue)) {
-                toast({
-                  title: `update failed!`,
-                  status: "error",
-                  isClosable: true,
-                });
+                showToast(`update failed`, "error");
                 return;
               }
 
               setLocalUpdateDuration(updateDurationValue);
               setLocalArcileShowWeek(articleShowWeekValue);
 
-              toast({
-                title: `update success!`,
-                status: "success",
-                isClosable: true,
-              });
+              showToast(`update success`, "success");
             }}>
             Update
           </Button>

@@ -4,7 +4,6 @@ import {
   Divider,
   Flex,
   Link,
-  Skeleton,
   SkeletonCircle,
   SkeletonText,
   Spacer,
@@ -12,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import dayjs from "dayjs";
-import React, { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { useRecoilValue } from "recoil";
 import { articleShowWeekAtom, rssArticlesAtom } from "../recoil/Atoms";
 

@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/button";
-import { Input, InputGroup, InputRightAddon } from "@chakra-ui/input";
+import { Input, InputGroup } from "@chakra-ui/input";
 import {
   Modal,
   ModalBody,
@@ -9,9 +9,9 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
-import { useToast } from "@chakra-ui/toast";
 import { Divider, Heading } from "@chakra-ui/react";
 import { useTwitterSetting } from "../hooks/useTwitterSetting";
+import { useCustomToast } from "../hooks/useCustomToast";
 
 interface propsIF {
   isOpen: boolean;
@@ -20,7 +20,7 @@ interface propsIF {
 
 const TwitterModal = ({ isOpen, closeFunction }: propsIF) => {
   const twitterSetting = useTwitterSetting();
-  const toast = useToast();
+  const { showToast } = useCustomToast();
 
   return (
     <Modal isOpen={isOpen} onClose={closeFunction}>
@@ -62,11 +62,7 @@ const TwitterModal = ({ isOpen, closeFunction }: propsIF) => {
                 twitterSetting.bearerToken
               );
 
-              toast({
-                title: `update success!`,
-                status: "success",
-                isClosable: true,
-              });
+              showToast(`update success!`, "success");
             }}>
             Update
           </Button>

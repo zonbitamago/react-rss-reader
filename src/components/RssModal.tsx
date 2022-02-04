@@ -17,14 +17,14 @@ import {
   ListIcon,
   ListItem,
 } from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/toast";
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoBarcodeOutline, IoCloseCircleOutline } from "react-icons/io5";
 import { useRecoilState } from "recoil";
 import rfdc from "rfdc";
 import { rssSettingListAtom } from "../recoil/Atoms";
 import * as ls from "local-storage";
 import { getParseTempResult } from "../domain/Parser";
+import { useCustomToast } from "../hooks/useCustomToast";
 
 const clone = rfdc();
 
@@ -38,16 +38,12 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
   const [url, setUrl] = useState("");
   const [recoilRssSettingList, setRecoilRssSettingList] =
     useRecoilState(rssSettingListAtom);
-  const toast = useToast();
+  const { showToast } = useCustomToast();
 
   const addRSSToList = async () => {
     const isValidTitle = title.length > 0;
     if (!isValidTitle) {
-      toast({
-        title: `update fail:invalidTitle`,
-        status: "error",
-        isClosable: true,
-      });
+      showToast(`update fail:invalidTitle`, "error");
       return;
     }
 
@@ -56,11 +52,7 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
     ]);
     const isValidURL = tmpResult.data.results[0].result;
     if (!isValidURL) {
-      toast({
-        title: `update fail:invalidURL`,
-        status: "error",
-        isClosable: true,
-      });
+      showToast(`update fail:invalidURL`, "error");
       return;
     }
 
@@ -68,11 +60,7 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
     cloneList.push({ title: title, url: url });
     setRecoilRssSettingList(cloneList);
     ls.set("rssSettingListAtom", cloneList);
-    toast({
-      title: `update success!`,
-      status: "success",
-      isClosable: true,
-    });
+    showToast(`update success!`, "success");
   };
 
   const rssListArea = recoilRssSettingList.map((elem, idx) => {
@@ -91,11 +79,7 @@ const RssModal = ({ isOpen, closeFunction }: propsIF) => {
               return element.title !== elem.title;
             });
             setRecoilRssSettingList(deletedList);
-            toast({
-              title: `delete success!`,
-              status: "success",
-              isClosable: true,
-            });
+            showToast(`delete success!`, "success");
           }}
         />
       </ListItem>
