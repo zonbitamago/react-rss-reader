@@ -18,73 +18,42 @@ import {
   IoLogoTwitter,
 } from "react-icons/io5/";
 import { IconType } from "react-icons/lib";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { fetchTwitterList, margeFeeds, parseFeeds } from "../domain/Parser";
+import { useRecoilState } from "recoil";
 import { useClock } from "../hooks/useClock";
 import { useTimerCallback } from "../hooks/useTimerCallback";
-import {
-  rssArticlesAtom,
-  rssArticlesAtomIF,
-  rssSettingListAtom,
-  twitterSettingAtom,
-} from "../recoil/Atoms";
+import { rssArticlesAtom } from "../recoil/Atoms";
 import RssModal from "./RssModal";
 import SettingModal from "./SettingModal";
 import TwitterModal from "./TwitterModal";
 import { keyframes } from "@emotion/react";
+import { useFetchContents } from "../hooks/useFetchContents";
 
 const Sidebar = () => {
   const [MMDD, HHMMSS] = useClock();
+  const { isLoading, fetchContents } = useFetchContents();
   const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
   const [isRssModalOpen, setIsRssModalOpen] = useState(false);
   const [isTwitterModalOpen, setIsTwitterModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const rssSettingList = useRecoilValue(rssSettingListAtom);
   const [rssArticles, setRssArticles] = useRecoilState(rssArticlesAtom);
-  const twitterSettingValue = useRecoilValue(twitterSettingAtom);
   const toast = useToast();
   const toastIdRef = React.useRef<ToastId>();
 
   const contentLoad = async () => {
-    setIsLoading(true);
-    const args = rssSettingList.map((elem) => {
-      return {
-        site_name: elem.title,
-        url: elem.url,
-      };
-    });
-
     try {
-      let twitterDatas: rssArticlesAtomIF[] = [];
-      if (
-        twitterSettingValue.listId.length > 0 &&
-        twitterSettingValue.bearerToken.length > 0
-      ) {
-        twitterDatas = await fetchTwitterList(
-          twitterSettingValue.listId,
-          twitterSettingValue.bearerToken
-        );
-      }
-
-      const feeds = await parseFeeds(args);
-      // console.log(feeds);
+      const parsedFeeds = await fetchContents();
       toast({
         title: `fetch article success!`,
         status: "success",
         isClosable: true,
       });
 
-      const parsedFeeds = margeFeeds(feeds, twitterDatas);
-
       // 更新するものがない場合
       if (JSON.stringify(rssArticles) === JSON.stringify(parsedFeeds)) {
-        setIsLoading(false);
         return;
       }
 
       // 更新toastが表示されている場合
       if (toast.isActive("updateContent")) {
-        setIsLoading(false);
         return;
       }
 
@@ -107,8 +76,6 @@ const Sidebar = () => {
           </Box>
         ),
       });
-
-      // setRssArticles(feeds);
     } catch (error) {
       console.error(error);
       toast({
@@ -117,7 +84,6 @@ const Sidebar = () => {
         isClosable: true,
       });
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
