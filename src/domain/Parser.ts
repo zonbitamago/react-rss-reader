@@ -33,7 +33,10 @@ export const parseFeeds = async (
         let retVal = element;
         retVal.site_name = siteNameElem?.site_name;
         // retVal.domain = getDomain(siteNameElem?.url);
-        retVal.icon_url = `https://www.google.com/s2/favicons?sz=64&domain=${getDomain(
+        // retVal.icon_url = `https://www.google.com/s2/favicons?sz=64&domain=${getDomain(
+        //   siteNameElem?.url
+        // )}`;
+        retVal.icon_url = `https://cdn-ak.favicon.st-hatena.com/?url=https://${getDomain(
           siteNameElem?.url
         )}`;
         retVal.updatedParsed = element.updatedParsed
