@@ -21,7 +21,7 @@ const Timeline = () => {
   const baseDate = dayjs().subtract(articleShowWeek, "w");
 
   const dummyTimeLineList: JSX.Element[] = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     const dummyTile = (
       <Fragment key={i}>
         <Box padding="2" boxShadow="lg" bg="white">
