@@ -83,7 +83,7 @@ export const getParseTempResult = async (
   };
 
   const tmpResult = await axios.post(
-    "https://goparallelfeed.vercel.app",
+    "https://go-parallel-feed-zonbitamago.vercel.app",
     body,
     {
       headers: {
