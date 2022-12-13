@@ -32,7 +32,7 @@ const Sidebar = () => {
 
   const contentLoad = async () => {
     try {
-      const parsedFeeds = await fetchContents();
+      let parsedFeeds = await fetchContents();
       showToast(`fetch article success!`, "success");
 
       // 更新するものがない場合
@@ -54,11 +54,13 @@ const Sidebar = () => {
             <Button
               width="inherit"
               colorScheme="blue"
-              onClick={() => {
+              onClick={async () => {
+                parsedFeeds = await fetchContents();
                 setRssArticles(parsedFeeds);
                 // @ts-ignore
                 toast.close(toastIdRef.current);
-              }}>
+              }}
+            >
               新しい更新を確認する。
             </Button>
           </Box>
@@ -113,7 +115,8 @@ const Sidebar = () => {
             />
             <Link
               href="https://github.com/zonbitamago/react-rss-reader"
-              isExternal>
+              isExternal
+            >
               <SideBarIcon icon={IoLogoGithub} />
             </Link>
           </Box>
@@ -160,7 +163,8 @@ const SideBarIcon = ({
       pt={2}
       pb={2}
       onClick={clicAction}
-      sx={{ cursor: "pointer" }}>
+      sx={{ cursor: "pointer" }}
+    >
       <Icon as={icon} w="100%" height="auto" />
     </Box>
   );
