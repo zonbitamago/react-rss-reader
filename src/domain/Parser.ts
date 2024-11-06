@@ -24,6 +24,9 @@ export const parseFeeds = async (
   });
 
   const result: rssArticlesAtomIF[] = tmpResult
+    .filter((elem) => {
+      return elem.result;
+    })
     .map((elem: { url: string; feed: { items: any } }) => {
       const siteNameElem = urls.find((url) => {
         return url.url === elem.url;
